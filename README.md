@@ -1,6 +1,6 @@
 # Queue Receiver for Spicetify
 
-**Add songs to your Spotify queue from a Python server** — seamlessly integrated into Spotify via Spicetify.
+**Add songs to your Spotify queue from a Python server!** Seamlessly integrated into Spotify via Spicetify.
 
 This lightweight extension adds a small button in Spotify's top bar. Clicking it opens a clean, draggable settings panel where you can configure your local Python queue server's address. The extension then polls the server every 2 seconds and automatically adds any returned Spotify track to your queue.
 
