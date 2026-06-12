@@ -346,7 +346,7 @@
 			</svg>`;
 			btn.addEventListener('click', () => openPanel(btn.getBoundingClientRect()));
 
-			targetBar.appendChild(btn);
+			targetBar.insertBefore(btn, targetBar.firstChild);
 			log.info('Topbar button injected.');
 		};
 
@@ -397,11 +397,14 @@
 				#queue-receiver-settings-btn { opacity: 0.7; transition: opacity 0.15s; cursor: pointer !important; width: 28px; height: 28px; }
 				#queue-receiver-settings-btn * { pointer-events: none; }
 				#queue-receiver-settings-btn:hover { opacity: 1; }
+				#global-nav-bar > div.main-globalNav-contentRight { min-width: fit-content; }
+				#global-nav-bar > div.main-globalNav-contentRight > div.link-subtle.main-topBar-topbarContentRight { min-width: fit-content; }
 			`;
 			document.head.appendChild(style);
 
 			// Inject now that we know the element exists, and re-inject
 			// via MutationObserver in case Spotify re-renders the topbar.
+
 			injectTopbarButton();
 			new MutationObserver(() => injectTopbarButton())
 				.observe(document.body, { childList: true, subtree: true });
