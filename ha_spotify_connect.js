@@ -1,4 +1,4 @@
-// Queue Receiver v1.0.0
+// Queue Receiver v1.0.1
 (async function () {
 
 	// =========================
@@ -10,10 +10,7 @@
 		pollInterval: 2000,
 		// The correct container is the one with link-subtle (confirmed by inspecting
 		// where the Collapsing Library button lives)
-		topbarButtonsSelectors: [
-			'.link-subtle.main-topBar-topbarContentRight',
-			'.main-topBar-topbarContentRight',
-		],
+		topbarButtonsSelector: '.main-actionButtons-spacer.main-actionButtons',
 	};
 
 	// =========================
@@ -119,7 +116,7 @@
 				setSetting(KEYS.host, host);
 				setSetting(KEYS.port, port);
 				setSaved(true);
-				log.info(`Settings saved — host: ${host}, port: ${port}`);
+				log.info(`Settings saved! host: ${host}, port: ${port}`);
 				Spicetify.showNotification('Queue Receiver: settings saved');
 			};
 
@@ -336,7 +333,7 @@
 		const injectTopbarButton = () => {
 			if (document.getElementById('queue-receiver-settings-btn')) return;
 
-			const targetBar = document.querySelector('.main-topBar-topbarContentRight');
+			const targetBar = document.querySelector('.main-actionButtons-spacer.main-actionButtons');
 			if (!targetBar) return;
 
 			const btn = document.createElement('button');
@@ -349,7 +346,7 @@
 			</svg>`;
 			btn.addEventListener('click', () => openPanel(btn.getBoundingClientRect()));
 
-			targetBar.insertBefore(btn, targetBar.firstChild);
+			targetBar.appendChild(btn);
 			log.info('Topbar button injected.');
 		};
 
@@ -364,10 +361,10 @@
 			try {
 				const res  = await fetch(`http://${host}:${port}/poll`);
 				const data = await res.json();
-				if (!data.track) return;
-				await Spicetify.addToQueue([{ uri: data.track }]);
+				if (!data.spotify_track) return;
+				await Spicetify.addToQueue([{ uri: data.spotify_track }]);
 				Spicetify.showNotification('Added to queue');
-				log.info('Track queued:', data.track);
+				log.info('Track queued:', data.spotify_track);
 			} catch (e) {
 				// Silently ignore connection refused — server just isn't running
 				if (!e?.message?.includes('Failed to fetch') && !e?.message?.includes('ERR_CONNECTION_REFUSED')) {
@@ -389,7 +386,7 @@
 			// Wait until the topbar container actually exists in the DOM
 			// before attempting injection - this is the root cause of the
 			// button not appearing on first load.
-			while (!document.querySelector('.main-topBar-topbarContentRight')) {
+			while (!document.querySelector('.main-actionButtons-spacer.main-actionButtons')) {
 				await new Promise(resolve => setTimeout(resolve, 100));
 			}
 			log.info('Topbar element found. Initializing addon.');
